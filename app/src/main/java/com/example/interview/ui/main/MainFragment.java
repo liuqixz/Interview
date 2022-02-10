@@ -1,5 +1,7 @@
 package com.example.interview.ui.main;
 
+import static java.lang.Thread.sleep;
+
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -25,8 +27,7 @@ public class MainFragment extends Fragment {
     private MainViewModel mViewModel;
 
     private Handler handler=new Handler();
-    private Handler handler1;
-    private Handler handler2;
+ 
     private TextView textView;
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -49,34 +50,47 @@ public class MainFragment extends Fragment {
         new Thread(new Runnable() {
             public void run() {
                 Looper.prepare();
-                Looper loop1=Looper.myLooper();
-                handler1= new Handler(Looper.myLooper()) {
-                    public void handleMessage(Message msg) {
-                       if(msg.what == 1){
-                           Log.d("a",11+"");
-                       }
 
+                Handler handler1 = new Handler(Looper.myLooper()) {
+                    public void handleMessage(Message msg) {
+                        if(msg.what == 2){
+                            Log.d("a", 112 + "");
+                        }
                     }
                 };
-                Looper.loop();
                 handler1.sendEmptyMessage(1);
+                try {
+                    sleep( 5000 );
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Looper.loop();
+
             }
         }).start();
         new Thread(new Runnable() {
             public void run() {
                 Looper.prepare();
                 Looper loop1=Looper.myLooper();
-                handler2 = new Handler(Looper.myLooper()) {
+                Handler handler2 = new Handler(loop1) {
                     public void handleMessage(Message msg) {
-                        if(msg.what == 2){
-                            Log.d("a",112+"");
-                        }
+                    if(msg.what == 1){
+                        Log.d("a", 112 + "");
+                    }
 
                     }
                 };
+                handler2.sendEmptyMessage(2);
+                try {
+                    sleep( 3000 );
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
                 Looper.loop();
 
-                handler2.sendEmptyMessage(2);
+
 
             }
         }).start();
@@ -86,6 +100,7 @@ public class MainFragment extends Fragment {
                 Handler handler = new Handler(){
                     @Override
                     public void handleMessage(Message msg) {
+
                         Toast.makeText(getContext(), "handler msg", Toast.LENGTH_LONG).show();
                     }
                 };
